@@ -1,4 +1,4 @@
-import cv2
+﻿import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -32,15 +32,19 @@ def find_squares(img):
     return squares
 
 ## Create a black image, a window
-img = cv2.imread('Dice1.jpg',cv2.IMREAD_GRAYSCALE)
+def Read_Image():
+    img = cv2.imread('Dice1.jpg',cv2.IMREAD_GRAYSCALE)
+    return img
 #img = cv2.imread('Dice1.jpg')
 #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # Equalizer
-clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-cl1 = clahe.apply(img)
-equ = cv2.equalizeHist(img)
+def Equalizer(img):
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    cl1 = clahe.apply(img)
+    equ = cv2.equalizeHist(img)
+    return cl1, equ
 #plt.subplot(221), plt.imshow(img, cmap = 'gray')
 #plt.subplot(222), plt.imshow(equ, cmap = 'gray')
 #plt.subplot(223), plt.imshow(cl1, cmap = 'gray')
@@ -48,7 +52,9 @@ equ = cv2.equalizeHist(img)
 
 # Clean Up and Threshold
 size = 2
-blur = cv2.blur(cl1,(5,5))
+def Blur(img):
+    blur = cv2.blur(img,(5,5))
+    return blur
 
 
 #plt.subplot(221), plt.imshow(cl1, cmap = 'gray')
@@ -56,35 +62,43 @@ blur = cv2.blur(cl1,(5,5))
 #plt.subplot(223), plt.imshow(img, cmap = 'gray')
 #plt.show()
 
-dilated = cv2.dilate(blur, np.ones((1,1)))
-erode = cv2.erode(dilated, np.ones((6,6)))
+def Dilate_Erode(img):
+    dilated = cv2.dilate(img, np.ones((1,1)))
+    erode = cv2.erode(dilated, np.ones((6,6)))
+    return erode
 #plt.subplot(211), plt.imshow(dilated, cmap = 'gray')
 #plt.subplot(212), plt.imshow(erode, cmap = 'gray')
 #plt.show()
 
-img = erode
-
-squares = find_squares(img)
-cv2.drawContours( img, squares, -1, (0, 255, 0), 3 )
-plt.imshow(img, 'gray')
-plt.show()
 
 
-# create trackbars for canny change
-cv2.namedWindow('canny', cv2.WINDOW_NORMAL)
-cv2.createTrackbar("p1",'canny',0, 1000, nothing)
-cv2.createTrackbar("p2",'canny',0, 1000, nothing);
 
-while(1):
-    k = cv2.waitKey(1) & 0xFF
-    if k == 27:
-        break
+def Canny_Method(img):
+    # create trackbars for canny change
+    cv2.namedWindow('canny', cv2.WINDOW_NORMAL)
+    cv2.createTrackbar("p1",'canny',0, 1000, nothing)
+    cv2.createTrackbar("p2",'canny',0, 1000, nothing);
 
-    # get current positions of four trackbars
-    p1 = cv2.getTrackbarPos("p1",'canny')
-    p2 = cv2.getTrackbarPos("p2",'canny')
+    while(1):
+        k = cv2.waitKey(1) & 0xFF
+        if k == 27:
+            break
 
-    edges = cv2.Canny(img,p1,p2,  apertureSize=5)
-    cv2.imshow('canny',edges)
+        # get current positions of four trackbars
+        p1 = cv2.getTrackbarPos("p1",'canny')
+        p2 = cv2.getTrackbarPos("p2",'canny')
 
-cv2.destroyAllWindows()
+        edges = cv2.Canny(img,p1,p2,  apertureSize=5)
+        cv2.imshow('canny',edges)
+
+    cv2.destroyAllWindows()
+    return edges
+
+if __name__ == '__main__':
+    img = Read_Image()
+    cl1,equ = Equalizer(img)
+    blur = Blur(cl1)
+    squares = find_squares(img)
+    cv2.drawContours(img, squares, -1, (0, 255, 0), 3 )
+    plt.imshow(img, 'gray')
+    plt.show()
