@@ -35,41 +35,37 @@ def find_squares(img):
 def Read_Image():
     img = cv2.imread('Dice1.jpg',cv2.IMREAD_GRAYSCALE)
     return img
-#img = cv2.imread('Dice1.jpg')
-#img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-#img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # Equalizer
 def Equalizer(img):
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     cl1 = clahe.apply(img)
     equ = cv2.equalizeHist(img)
+    #plt.subplot(221), plt.imshow(img, cmap = 'gray')
+    #plt.subplot(222), plt.imshow(equ, cmap = 'gray')
+    #plt.subplot(223), plt.imshow(cl1, cmap = 'gray')
+    #plt.show()
     return cl1, equ
-#plt.subplot(221), plt.imshow(img, cmap = 'gray')
-#plt.subplot(222), plt.imshow(equ, cmap = 'gray')
-#plt.subplot(223), plt.imshow(cl1, cmap = 'gray')
-#plt.show()
+
 
 # Clean Up and Threshold
-size = 2
-def Blur(img):
-    blur = cv2.blur(img,(5,5))
+def Blur(img, kernel = (5,5)):
+    blur = cv2.blur(img,kernel)
+    #plt.subplot(221), plt.imshow(cl1, cmap = 'gray')
+    #plt.subplot(222), plt.imshow(blur, cmap = 'gray')
+    #plt.subplot(223), plt.imshow(img, cmap = 'gray')
+    #plt.show()
     return blur
 
 
-#plt.subplot(221), plt.imshow(cl1, cmap = 'gray')
-#plt.subplot(222), plt.imshow(blur, cmap = 'gray')
-#plt.subplot(223), plt.imshow(img, cmap = 'gray')
-#plt.show()
 
-def Dilate_Erode(img):
-    dilated = cv2.dilate(img, np.ones((1,1)))
-    erode = cv2.erode(dilated, np.ones((6,6)))
+def Dilate_Erode(img, dilated_ker = (1,1), erode_ker = (6,6)):
+    dilated = cv2.dilate(img, np.ones(dilated_ker))
+    erode = cv2.erode(dilated, np.ones(erode_ker))
+    #plt.subplot(211), plt.imshow(dilated, cmap = 'gray')
+    #plt.subplot(212), plt.imshow(erode, cmap = 'gray')
+    #plt.show()
     return erode
-#plt.subplot(211), plt.imshow(dilated, cmap = 'gray')
-#plt.subplot(212), plt.imshow(erode, cmap = 'gray')
-#plt.show()
-
 
 
 
@@ -95,10 +91,17 @@ def Canny_Method(img):
     return edges
 
 if __name__ == '__main__':
+    # Read image
     img = Read_Image()
-    cl1,equ = Equalizer(img)
+    # Adjust contrast of image
+    cl1, equ = Equalizer(img)
+    # Blur filter to the image
     blur = Blur(cl1)
-    squares = find_squares(img)
+    # Dilation and erosion morphological transformation
+    erode = Dilate_Erode(blur)      # This can change everything
+    # Find squares in the image
+    squares = find_squares(erode)
+    # Draw Contrours on the original image
     cv2.drawContours(img, squares, -1, (0, 255, 0), 3 )
     plt.imshow(img, 'gray')
     plt.show()
