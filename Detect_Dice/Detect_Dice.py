@@ -32,9 +32,12 @@ def find_squares(img):
     return squares
 
 ## Create a black image, a window
-def Read_Image():
-    img = cv2.imread('Dice1.jpg',cv2.IMREAD_GRAYSCALE)
+def Read_Image(img_name):
+    img = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
     return img
+#img = cv2.imread('Dice1.jpg')
+#img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+#img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # Equalizer
 def Equalizer(img):
@@ -92,7 +95,7 @@ def Canny_Method(img):
 
 if __name__ == '__main__':
     # Read image
-    img = Read_Image()
+    img = Read_Image('Dice8.jpg')
     # Adjust contrast of image
     cl1, equ = Equalizer(img)
     # Blur filter to the image

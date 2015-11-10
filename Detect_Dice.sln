@@ -9,6 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Detect_Dice\Dice1.jpg = Detect_Dice\Dice1.jpg
 		Detect_Dice\Dice2.jpg = Detect_Dice\Dice2.jpg
+		Detect_Dice\Dice3.jpg = Detect_Dice\Dice3.jpg
+		Detect_Dice\Dice4.jpg = Detect_Dice\Dice4.jpg
+		Detect_Dice\Dice5.jpg = Detect_Dice\Dice5.jpg
+		Detect_Dice\Dice6.jpg = Detect_Dice\Dice6.jpg
+		Detect_Dice\Dice7.jpg = Detect_Dice\Dice7.jpg
+		Detect_Dice\Dice8.jpg = Detect_Dice\Dice8.jpg
 		Detect_Dice\Dice_mod.png = Detect_Dice\Dice_mod.png
 	EndProjectSection
 EndProject
