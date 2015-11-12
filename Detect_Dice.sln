@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{04C4DF91-EAA1-413E-B534-7CEA141E407C}"
 	ProjectSection(SolutionItems) = preProject
 		Detect_Dice\Dice1.jpg = Detect_Dice\Dice1.jpg
+		Detect_Dice\Dice10.jpg = Detect_Dice\Dice10.jpg
 		Detect_Dice\Dice2.jpg = Detect_Dice\Dice2.jpg
 		Detect_Dice\Dice3.jpg = Detect_Dice\Dice3.jpg
 		Detect_Dice\Dice4.jpg = Detect_Dice\Dice4.jpg
@@ -15,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Detect_Dice\Dice6.jpg = Detect_Dice\Dice6.jpg
 		Detect_Dice\Dice7.jpg = Detect_Dice\Dice7.jpg
 		Detect_Dice\Dice8.jpg = Detect_Dice\Dice8.jpg
+		Detect_Dice\Dice9.jpg = Detect_Dice\Dice9.jpg
 		Detect_Dice\Dice_mod.png = Detect_Dice\Dice_mod.png
 	EndProjectSection
 EndProject

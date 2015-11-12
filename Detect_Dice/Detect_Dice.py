@@ -95,7 +95,7 @@ def Canny_Method(img):
 
 if __name__ == '__main__':
     # Read image
-    img = Read_Image('Dice8.jpg')
+    img = Read_Image('Dice10.jpg')
     # Adjust contrast of image
     cl1, equ = Equalizer(img)
     # Blur filter to the image
