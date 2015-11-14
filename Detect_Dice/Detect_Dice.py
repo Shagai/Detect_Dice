@@ -50,7 +50,6 @@ def Equalizer(img):
     #plt.show()
     return cl1, equ
 
-
 # Clean Up and Threshold
 def Blur(img, kernel = (5,5)):
     blur = cv2.blur(img,kernel)
@@ -60,8 +59,6 @@ def Blur(img, kernel = (5,5)):
     #plt.show()
     return blur
 
-
-
 def Dilate_Erode(img, dilated_ker = (1,1), erode_ker = (6,6)):
     dilated = cv2.dilate(img, np.ones(dilated_ker))
     erode = cv2.erode(dilated, np.ones(erode_ker))
@@ -69,8 +66,6 @@ def Dilate_Erode(img, dilated_ker = (1,1), erode_ker = (6,6)):
     #plt.subplot(212), plt.imshow(erode, cmap = 'gray')
     #plt.show()
     return erode
-
-
 
 def Canny_Method(img):
     # create trackbars for canny change
@@ -93,9 +88,31 @@ def Canny_Method(img):
     cv2.destroyAllWindows()
     return edges
 
+def Squares_Filter(squares):
+    sq = np.ones((len(squares)), dtype=bool)
+    filters = []
+    for i in range(len(squares)):
+        if sq[i] == True:
+            filters.append(squares[i])
+            sq[i] = False
+        for j in range(len(squares)):
+            if sq[j] == True:
+                diff = Center(squares[i]) - Center(squares[j])
+                if abs(diff[0]) < 15 and abs(diff[1]) < 15:
+                    sq[j] = False       
+                    break       
+    return filters
+
+def Center(polygon):
+    xc = sum(x for (x, y) in polygon) / len(polygon)
+    yc = sum(y for (x, y) in polygon) / len(polygon)
+    
+    return np.array([xc, yc])
+
+
 if __name__ == '__main__':
     # Read image
-    img = Read_Image('Dice10.jpg')
+    img = Read_Image('Dice9.jpg')
     # Adjust contrast of image
     cl1, equ = Equalizer(img)
     # Blur filter to the image
@@ -104,6 +121,7 @@ if __name__ == '__main__':
     erode = Dilate_Erode(blur)      # This can change everything
     # Find squares in the image
     squares = find_squares(erode)
+    squares = Squares_Filter(squares)
     # Draw Contrours on the original image
     cv2.drawContours(img, squares, -1, (0, 255, 0), 3 )
     plt.imshow(img, 'gray')
