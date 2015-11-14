@@ -24,7 +24,7 @@ def find_squares(img):
             for cnt in contours:
                 cnt_len = cv2.arcLength(cnt, True)
                 cnt = cv2.approxPolyDP(cnt, 0.02*cnt_len, True)
-                if len(cnt) == 4 and cv2.contourArea(cnt) > 1000 and cv2.isContourConvex(cnt):
+                if len(cnt) == 4 and cv2.contourArea(cnt) > 1000 and cv2.contourArea(cnt) < 100000 and cv2.isContourConvex(cnt):
                     cnt = cnt.reshape(-1, 2)
                     max_cos = np.max([angle_cos( cnt[i], cnt[(i+1) % 4], cnt[(i+2) % 4] ) for i in xrange(4)])
                     if max_cos < 0.1:
@@ -98,7 +98,7 @@ def Squares_Filter(squares):
         for j in range(len(squares)):
             if sq[j] == True:
                 diff = Center(squares[i]) - Center(squares[j])
-                if abs(diff[0]) < 15 and abs(diff[1]) < 15:
+                if abs(diff[0]) < 20 and abs(diff[1]) < 20:
                     sq[j] = False       
                     break       
     return filters
@@ -109,6 +109,14 @@ def Center(polygon):
     
     return np.array([xc, yc])
 
+def Clean_Background(img, contours):
+    mask = np.zeros(img.shape, np.uint8)
+    cv2.drawContours(mask, squares, -1,255,-1 )
+    res = cv2.bitwise_and(img,img, mask= mask)
+    return res
+
+def Draw_Contours(img, contours):
+    cv2.drawContours( img, contours, -1, (0, 255, 0), 3 )
 
 if __name__ == '__main__':
     # Read image
@@ -122,7 +130,7 @@ if __name__ == '__main__':
     # Find squares in the image
     squares = find_squares(erode)
     squares = Squares_Filter(squares)
-    # Draw Contrours on the original image
-    cv2.drawContours(img, squares, -1, (0, 255, 0), 3 )
-    plt.imshow(img, 'gray')
+    # Clean background from original image
+    res = Clean_Background(img, squares)
+    plt.imshow(res, 'gray')
     plt.show()
