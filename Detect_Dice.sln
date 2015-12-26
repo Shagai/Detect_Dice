@@ -18,7 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Detect_Dice\Dice8.jpg = Detect_Dice\Dice8.jpg
 		Detect_Dice\Dice9.jpg = Detect_Dice\Dice9.jpg
 		Detect_Dice\Dice_mod.png = Detect_Dice\Dice_mod.png
+		Detect_Dice\J.png = Detect_Dice\J.png
 		Detect_Dice\K.jpg = Detect_Dice\K.jpg
+		Detect_Dice\K.png = Detect_Dice\K.png
+		Detect_Dice\Q.png = Detect_Dice\Q.png
 	EndProjectSection
 EndProject
 Global

@@ -34,8 +34,9 @@ def find_squares(img):
 ## Create a black image, a window
 def Read_Image(img_name):
     img = cv2.imread(img_name, cv2.IMREAD_GRAYSCALE)
-    return img
-#img = cv2.imread('Dice1.jpg')
+    ori = cv2.imread(img_name, cv2.COLOR_BGR2HSV_FULL)
+    return img, ori
+#
 #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 #img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -111,16 +112,49 @@ def Center(polygon):
 
 def Clean_Background(img, contours):
     mask = np.zeros(img.shape, np.uint8)
-    cv2.drawContours(mask, squares, -1,255,-1 )
+    cv2.drawContours(mask, contours, -1,255,-1 )
     res = cv2.bitwise_and(img,img, mask= mask)
     return res
 
 def Draw_Contours(img, contours):
     cv2.drawContours( img, contours, -1, (0, 255, 0), 3 )
 
+def Detect_Symbols(img):
+    ret,thresh = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
+    bin, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    new = []
+    new.append(contours[len(contours) - 2])
+    Draw_Contours(img, contours[len(contours) - 2])
+    return new
+
+def Detect_Circles(res, img, nwsq):
+    circles = cv2.HoughCircles(res, cv2.HOUGH_GRADIENT,1,30, param1=50,param2=30,minRadius=0,maxRadius=30)
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        if len(circles[0]) == 7:
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(img,'7',(nwsq[0][0][0], nwsq[0][0][1]), font, 3,(255,255,255),2)
+            return img, 1
+        if len(circles[0]) == 8:
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(img,'8',(nwsq[0][0][0], nwsq[0][0][1]), font, 3,(255,255,255),2)
+            return img, 1
+
+    circles = cv2.HoughCircles(res, cv2.HOUGH_GRADIENT,1,30, param1=50,param2=30,minRadius=0,maxRadius=50)
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        if len(circles[0]) == 1:
+            diff = Center(nwsq[0]) - [circles[0][0][0],circles[0][0][1]]
+            print diff
+            if abs(diff[0]) < 10:
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                cv2.putText(img,'Ace',(nwsq[0][0][0], nwsq[0][0][1]), font, 3,(255,255,255),2)
+                return img, 1
+    return img, 0
+
 if __name__ == '__main__':
     # Read image
-    img = Read_Image('Dice9.jpg')
+    img, ori = Read_Image('Dice9.jpg')
     # Adjust contrast of image
     cl1, equ = Equalizer(img)
     # Blur filter to the image
@@ -130,7 +164,30 @@ if __name__ == '__main__':
     # Find squares in the image
     squares = find_squares(erode)
     squares = Squares_Filter(squares)
-    # Clean background from original image
-    res = Clean_Background(img, squares)
-    plt.imshow(res, 'gray')
+    # Squares Loop
+    for i in range(len(squares)):
+        # Clean background from original image
+        nwsq = []
+        nwsq.append(squares[i])
+        res = Clean_Background(img, nwsq)
+        # Detect Features
+        Circles, detect = Detect_Circles(res, img, nwsq)   
+        if detect == 0:
+            new = Detect_Symbols(res)
+            res = Clean_Background(img, new)   
+            #plt.imshow(res, 'gray')
+            #plt.show()
+            for letter in ['K', 'J', 'Q']:
+                if letter == 'J':
+                    imLetter = cv2.imread('J.png', cv2.IMREAD_GRAYSCALE)
+                if letter == 'Q':
+                    imLetter = cv2.imread('Q.png', cv2.IMREAD_GRAYSCALE)
+                if letter == 'K':
+                    imLetter = cv2.imread('K.png', cv2.IMREAD_GRAYSCALE)
+                matching = cv2.matchShapes(res, imLetter, 1, 0.0)
+                print 'matching', matching
+                if matching < 0.06:
+                    cv2.putText(img,letter,(nwsq[0][0][0], nwsq[0][0][1]), cv2.FONT_HERSHEY_SIMPLEX, 3,(255,255,255),2)
+                    break
+    plt.imshow(img, 'gray')
     plt.show()
